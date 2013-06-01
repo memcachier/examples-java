@@ -18,6 +18,14 @@ for connecting to memcachier.
 Another very good choice is
 [XMemcached](https://github.com/killme2008/xmemcached).
 
+## Building
+
+The Apache Maven build system is used. Simply execute:
+
+~~~~ .sh
+$ mvn package
+~~~~
+
 ## Get involved!
 
 We are happy to receive bug reports, fixes, documentation enhancements,
