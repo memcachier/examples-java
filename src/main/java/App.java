@@ -23,19 +23,51 @@ public class App extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    int digit = (new Random()).nextInt(50);
+    int digit = (new Random()).nextInt(30);
     Result r = fib(digit);
-
     StringBuilder sb = new StringBuilder();
-    sb.append("<html><head><title>MemCachier Fibonacci Example</title></head><body>");
-    sb.append("<h1>MemCachier Fibonacci Example</h1>");
-    sb.append("<p>This script computes a random digit of the Fibonacci " +
-       "sequence. Before computing, though, it checks to see if there's " +
-       "a cached value for the digit and serves the cached value if " +
-       "there's a hit.</p>");
-    sb.append("<p>Digit: " + digit + "</p>");
-    sb.append("<p>Value: " + r.val + "</p>");
-    sb.append("<p>Was in cache? " + r.cached + "</p></body></html>");
+
+    // static html...
+    sb.append(
+        "<html>\n" +
+          "<head>\n" +
+            "<title>MemCachier Fibonacci Example</title>\n" +
+            "<style type='text/css'>\n" +
+              "html, body { height: 100%; }\n " +
+              "#wrap { min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -60px; }\n" +
+              "#push, #footer { height: 60px; }\n" +
+              "#footer { background-color: #f5f5f5; }\n" +
+              "@media (max-width: 767px) { #footer { margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; }}\n" +
+              ".container { width: auto; max-width: 680px; }\n" +
+              ".container .credit { margin: 20px 0; }\n" +
+            "</style>" +
+            "<link href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/" +
+                       "css/bootstrap-combined.min.css' rel='stylesheet'>\n" +
+            "<link rel='shortcut icon' href='https://www.memcachier.com/wp-content/uploads/2013/06/favicon.ico'>\n" +
+          "</head>\n" +
+          "<body>\n" +
+            "<div id='wrap'><div class='container'>\n" +
+            "<div class='page-header'><h1>MemCachier Fibonacci Example</h1></div>\n" +
+             "<p class='lead'>This script computes a random digit of the Fibonacci " +
+                "sequence. Before computing, though, it checks to see if " +
+                "there's a cached value for the digit and serves the cached "+
+                "value if so.</p>\n");
+
+    // actual cache / result values...
+    sb.append("<p class='lead'>Digit: <span class='text-info'>" + digit + "</span></p>\n");
+    sb.append("<p class='lead'>Value: <span class='text-info'>" + r.val + "</span></p>\n");
+    sb.append("<p class='lead'>Was in cache? <span class='text-info'>" + r.cached + "</span></p>\n");
+
+    // static html again...
+    sb.append("</div></div>\n");
+    sb.append("<div id='footer'><div class='container'>\n" +
+        "<p class='muted credit'>Example by " +
+          "<a href='http://www.memcachier.com'>" +
+            "<img class='brand' src='https://www.memcachier.com/wp-content/uploads/2013/06/memcachier-small.png' alt='MemCachier'" +
+              "title='MemCachier' style='padding-left:8px;padding-right:3px;padding-bottom:3px;'/>" +
+            "MemCachier</a></p></div> </div>");
+    sb.append("<script src='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js'></script>");
+    sb.append("</body></html>");
 
     resp.getWriter().print(sb.toString());
   }
