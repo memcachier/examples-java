@@ -3,6 +3,7 @@ import java.util.Random;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import net.spy.memcached.AddrUtil;
+import net.spy.memcached.ConnectionFactory;
 import net.spy.memcached.ConnectionFactoryBuilder;
 import net.spy.memcached.MemcachedClient;
 import net.spy.memcached.auth.AuthDescriptor;
@@ -39,7 +40,7 @@ public class App extends HttpServlet {
               "#footer { background-color: #f5f5f5; }\n" +
               "@media (max-width: 767px) { #footer { margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; }}\n" +
               ".container { width: auto; max-width: 680px; }\n" +
-              ".container .credit { margin: 20px 0; }\n" +
+              ".container .credit { margin: 20px 0; height: 1px; }\n" +
             "</style>" +
             "<link href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/" +
                        "css/bootstrap-combined.min.css' rel='stylesheet'>\n" +
@@ -63,8 +64,9 @@ public class App extends HttpServlet {
     sb.append("<div id='footer'><div class='container'>\n" +
         "<p class='muted credit'>Example by " +
           "<a href='http://www.memcachier.com'>" +
-            "<img class='brand' src='https://www.memcachier.com/wp-content/uploads/2013/06/memcachier-small.png' alt='MemCachier'" +
-              "title='MemCachier' style='padding-left:8px;padding-right:3px;padding-bottom:3px;'/>" +
+            "<img class='brand' src='https://www.memcachier.com/assets/memcachier-medium.png' alt='MemCachier'" +
+              "title='MemCachier' style='padding-left:8px;padding-right:3px;padding-bottom:3px;" +
+              "width:30px;height:30px;'/>" +
             "MemCachier</a></p></div> </div>");
     sb.append("<script src='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js'></script>");
     sb.append("</body></html>");
@@ -117,13 +119,23 @@ public class App extends HttpServlet {
    */
   private static void createMemCachierClient() {
     try {
-      AuthDescriptor ad = new AuthDescriptor(
-          new String[] { "PLAIN" },
-          new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
-                                   System.getenv("MEMCACHIER_PASSWORD")));
-      mc = new MemcachedClient(
-          new ConnectionFactoryBuilder().setProtocol(
-              ConnectionFactoryBuilder.Protocol.BINARY).setAuthDescriptor(ad).build(),
+      ConnectionFactory c;
+      // allow auth to be disabled for local development
+      if (System.getenv("MEMCACHE_NOAUTH") == null) {
+        System.out.println("Using authentication with memcache");
+        AuthDescriptor ad = new AuthDescriptor(
+            new String[] { "PLAIN" },
+            new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
+                                     System.getenv("MEMCACHIER_PASSWORD")));
+        c = new ConnectionFactoryBuilder().setProtocol(
+                    ConnectionFactoryBuilder.Protocol.BINARY)
+                  .setAuthDescriptor(ad).build();
+      } else {
+        System.out.println("Not using authentication with memcache");
+        c = new ConnectionFactoryBuilder().setProtocol(
+                    ConnectionFactoryBuilder.Protocol.BINARY).build();
+      }
+      mc = new MemcachedClient(c,
           AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
     } catch (Exception ex) {
       System.err.println(
