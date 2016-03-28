@@ -1,8 +1,10 @@
 {
   "name": "MemCachier Java Example App",
   "description": "Java Jetty app illustrating how to use MemCachier to cache computations",
-  "repository": "https://github.com/memcachier/examples-java",
+  "keywords": ["java", "jetty", "memcache", "memcachier", "caching", "spymemcached" ],
   "logo": "https://www.memcachier.com/assets/logo-large.png",
-  "keywords": ["java", "jetty", "memcache", "memcachier", "caching" ],
+  "image": "heroku/python",
+  "website": "https://www.memcachier.com",
+  "repository": "https://github.com/memcachier/examples-java",
   "addons": [ "memcachier" ]
 }
