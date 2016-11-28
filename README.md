@@ -28,9 +28,9 @@ Another very good choice is
 
 The Apache Maven build system is used. Simply execute:
 
-~~~~ .sh
+```sh
 $ mvn package
-~~~~
+```
 
 ## Get involved!
 
